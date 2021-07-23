@@ -1,7 +1,8 @@
 # YogaAnytimeDownloader
  Helps automate downloading from YogaAnytime.com
 
-#How to use
+# How to use
+
 Step 1: Sign into YogaAnytime.com in either Google Chrome or FireFox
 Step 2: Open the program and click "Get Auth Cookie", select your browser.
 Step 3: Copy and paste either a single video or a season url into the dedicated textbox.
