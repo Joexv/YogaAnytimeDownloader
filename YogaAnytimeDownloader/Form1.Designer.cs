@@ -41,14 +41,17 @@ namespace YogaAnytimeDownloader
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.qualityPicker = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.VideoPB = new System.Windows.Forms.ProgressBar();
-            this.DLabel = new System.Windows.Forms.Label();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.fromFireFoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromChromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.VideoPB = new System.Windows.Forms.ProgressBar();
+            this.DLabel = new System.Windows.Forms.Label();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -123,10 +126,13 @@ namespace YogaAnytimeDownloader
             this.qualityPicker,
             this.toolStripSeparator1,
             this.toolStripDropDownButton1,
-            this.toolStripButton1});
+            this.toolStripSeparator3,
+            this.toolStripButton1,
+            this.toolStripSeparator2,
+            this.toolStripButton2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(981, 50);
+            this.toolStrip1.Size = new System.Drawing.Size(981, 42);
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -151,6 +157,42 @@ namespace YogaAnytimeDownloader
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fromFireFoxToolStripMenuItem,
+            this.fromChromeToolStripMenuItem});
+            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(213, 36);
+            this.toolStripDropDownButton1.Text = "Get Auth Cookie";
+            // 
+            // fromFireFoxToolStripMenuItem
+            // 
+            this.fromFireFoxToolStripMenuItem.Name = "fromFireFoxToolStripMenuItem";
+            this.fromFireFoxToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.fromFireFoxToolStripMenuItem.Text = "From FireFox";
+            this.fromFireFoxToolStripMenuItem.Click += new System.EventHandler(this.fromFireFoxToolStripMenuItem_Click);
+            // 
+            // fromChromeToolStripMenuItem
+            // 
+            this.fromChromeToolStripMenuItem.Name = "fromChromeToolStripMenuItem";
+            this.fromChromeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.fromChromeToolStripMenuItem.Text = "From Chrome";
+            this.fromChromeToolStripMenuItem.Click += new System.EventHandler(this.fromChromeToolStripMenuItem_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(172, 36);
+            this.toolStripButton1.Text = "Convert Video";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // linkLabel1
             // 
@@ -189,41 +231,25 @@ namespace YogaAnytimeDownloader
             this.DLabel.TabIndex = 12;
             this.DLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // toolStripDropDownButton1
+            // toolStripButton2
             // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fromFireFoxToolStripMenuItem,
-            this.fromChromeToolStripMenuItem});
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(213, 44);
-            this.toolStripDropDownButton1.Text = "Get Auth Cookie";
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(72, 36);
+            this.toolStripButton2.Text = "HELP";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // fromFireFoxToolStripMenuItem
+            // toolStripSeparator2
             // 
-            this.fromFireFoxToolStripMenuItem.Name = "fromFireFoxToolStripMenuItem";
-            this.fromFireFoxToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.fromFireFoxToolStripMenuItem.Text = "From FireFox";
-            this.fromFireFoxToolStripMenuItem.Click += new System.EventHandler(this.fromFireFoxToolStripMenuItem_Click);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 42);
             // 
-            // fromChromeToolStripMenuItem
+            // toolStripSeparator3
             // 
-            this.fromChromeToolStripMenuItem.Name = "fromChromeToolStripMenuItem";
-            this.fromChromeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.fromChromeToolStripMenuItem.Text = "From Chrome";
-            this.fromChromeToolStripMenuItem.Click += new System.EventHandler(this.fromChromeToolStripMenuItem_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(172, 44);
-            this.toolStripButton1.Text = "Convert Video";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 42);
             // 
             // Form1
             // 
@@ -273,6 +299,9 @@ namespace YogaAnytimeDownloader
         private System.Windows.Forms.ToolStripMenuItem fromFireFoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromChromeToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
     }
 }
 

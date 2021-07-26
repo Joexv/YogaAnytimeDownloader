@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Web;
 using RestSharp;
+using System.Management.Automation;
 
 namespace YogaAnytimeDownloader
 {
@@ -75,9 +76,22 @@ namespace YogaAnytimeDownloader
                 BetterWebClient client = new BetterWebClient(GenCookies());
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
-                client.DownloadFileAsync(new Uri(URL), FileName);
+                if (FileName.Contains(".ts"))
+                    client.DownloadFileAsync(new Uri(URL), PadName(FileName));
+                else
+                    client.DownloadFileAsync(new Uri(URL), FileName);
             });
             thread.Start();
+        }
+
+        private string PadName(string FileName)
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                if (FileName.Contains($"-{i}.ts"))
+                    return FileName.Replace($"-{i}.ts", $"-0{i}.ts");
+            }
+            return FileName;
         }
 
         private string CurlDL(string URL)
@@ -156,7 +170,8 @@ namespace YogaAnytimeDownloader
 
                 foreach (string video in File.ReadAllLines(Application.StartupPath + $"\\{DL.title}\\" + $"h264-{qualityPicker.Text}.m3u8"))
                 {
-                    startDownload(DL.playlist.Replace($"h264-{qualityPicker.Text}.m3u8?subtitles=en", video), Application.StartupPath + $"\\{DL.title}\\" + video);
+                    if(!video.Contains("#EXT"))
+                        startDownload(DL.playlist.Replace($"h264-{qualityPicker.Text}.m3u8?subtitles=en", video), Application.StartupPath + $"\\{DL.title}\\" + video);
                 }
                 VideoFolder = Application.StartupPath + $"\\{DL.title}\\";
             }
@@ -174,6 +189,9 @@ namespace YogaAnytimeDownloader
 
         private void MergeVideos(string Folder)
         {
+            File.Delete($"{Folder}\\All.ts");
+            File.Delete($"{Folder}\\mylist.txt");
+            File.Delete($"{Folder}\\merged.mp4");
             //Create list of all TS files for FFMPEG
             // (for %i in (*.ts) do @echo file '%i') > mylist.txt
 
@@ -183,18 +201,53 @@ namespace YogaAnytimeDownloader
             //Convert to MP4
             // C:\Users\HPD\source\repos\YogaAnytimeDownloader\YogaAnytimeDownloader\bin\Debug\ffmpeg -i all.ts -acodec copy -vcodec copy all.mp4
 
-            ProcessStartInfo ProcessInfo;
-            Process Process;
 
-            string List_CMD = $"{Application.StartupPath}\\ffmpeg -f concat -i mylist.txt -c copy all.ts";
-            string MP4_CMD = $"{Application.StartupPath}\\ffmpeg -i all.ts -acodec copy -vcodec copy Merged.mp4";
-            string Full_CMD = $"/C cd \"{Folder}\" & (for %i in (*.ts) do @echo file '%i') > \"{Folder}\"\\mylist.txt & {List_CMD} & {MP4_CMD} & @echo Done & pause";
-            Console.WriteLine(Full_CMD);
-            ProcessInfo = new ProcessStartInfo("cmd.exe", Full_CMD);
-            ProcessInfo.UseShellExecute = true;
-            Process = Process.Start(ProcessInfo);
-            Process.WaitForExit();
-            Process.Dispose();
+            string List_CMD = $"{Application.StartupPath}\\ffmpeg -f concat -i mylist.txt -c copy all.ts -y";
+            string MP4_CMD = $"{Application.StartupPath}\\ffmpeg -i all.ts -acodec copy -vcodec copy Merged.mp4 -y";
+            MessageBox.Show("Merging the video. The application will apear inactive in some cases. Please wait for it to finish.\n\nProcess will begin once you hit OK");
+            Application.DoEvents();
+
+            //If Powershell exists run it through there instead. Allows for computers running UNC file paths to be able to properly download 
+            bool NotWorking = false;
+            if (Directory.Exists(@"C:\Windows\System32\WindowsPowerShell") && !NotWorking)
+            {
+                string Full_Powershell = $"cd \"{Folder}\"; " +
+                    $"Get-ChildItem(\"{Folder}\") | " +
+                    "where {$_.extension -eq \".ts\"} | " +
+                    "select -expandproperty name | " +
+                    "foreach ($_) { \"file $_\"} | " +
+                    "Set-Content mylist.txt; " +
+                    $"& {List_CMD};" +
+                    $"& {MP4_CMD}";
+                Console.WriteLine(Full_Powershell);
+
+                PowerShell ps = PowerShell.Create();
+                ps.AddScript(Full_Powershell, true).Invoke();
+                ps.Invoke();
+            }
+            else
+            {
+                string Full_CMD = $"/C cd \"{Folder}\" & (for %i in (*.ts) do @echo file '%i') > \"{Folder}\\mylist.txt\" & {List_CMD} & {MP4_CMD} & @echo Done & pause";
+                Console.WriteLine(Full_CMD);
+                ProcessStartInfo ProcessInfo;
+                Process Process;
+                ProcessInfo = new ProcessStartInfo("cmd.exe", Full_CMD);
+                ProcessInfo.UseShellExecute = true;
+                Process = Process.Start(ProcessInfo);
+                Process.WaitForExit();
+                Process.Dispose();
+            }
+
+            DialogResult dialogResult = MessageBox.Show("Done! Would you like to remove the old unmerged TS files?", "Done", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                foreach (String file in Directory.GetFiles(Folder, "*.ts", SearchOption.AllDirectories))
+                    File.Delete(file);
+                foreach (String file in Directory.GetFiles(Folder, "*.m3u8", SearchOption.AllDirectories))
+                    File.Delete(file);
+                File.Delete("mylist.txt");
+            }
+                
         }
 
         private void fromFireFoxToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,6 +288,17 @@ namespace YogaAnytimeDownloader
                 MergeVideos(folderDlg.SelectedPath);
 
             folderDlg.Dispose();
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            string Help_MSG = "Step 1: Sign into YogaAnytime.com in FireFox or Google Chrome\n" +
+                "Step 2: Click Get Auth Cookie - From *Browser*\n" +
+                "Step 3: Insert a URL into the single video or Season textbox." +
+                "Step 4: Hit Download\n\n" +
+                "To convert the downloaded video into something more managable, click Convert Video then select the folder where your video is located. (Typically in this applications folder)\n\n" +
+                "If the program is unable to get the cookies from Chrome or FireFox try clearing all Cookies from your browser, closing your browser, and then repeating the steps from Step 1.";
+            MessageBox.Show(Help_MSG, "Help");
         }
     }
 }
