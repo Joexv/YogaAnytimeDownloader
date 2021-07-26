@@ -19,3 +19,5 @@ If you want to convert the downloaded video into something a bit easier to manag
 In order to download videos behind their paywall. You MUST have an active subscriber account. (trial accounts work too)
 This program does not enable piracy, nor does it support it. It enables the user to backup and view the content they pay for offline on a device that is easier for the user.
 Support your favorite content creators!
+
+If the program repeatedly has issues getting the cookies from FireFox or Chrome, go into their respective settings and clear all cookies and data, then sign back into YogaAnytime.com and try again.
