@@ -1,0 +1,260 @@
+
+
+var playerInitTimemediaspace = Date.now();
+var playermediaspace = jwplayer("mediaspace");
+
+var playerConfigmediaspace = {
+	"playlist": [{
+		"sources": [
+			
+
+			{ "type": "hls", "label": "Auto-HLS", "file": "https://yogaanytime-media.global.ssl.fastly.net/1628272974_e6fb485e5a690d2b8b466c920ec4077e0c60961d/2021/05/alana-mitnick/14989_live/video/h264-,504p,720p,360p,216p.m3u8" },
+			{ "type": "mpd", "label": "Auto-MPD", "file": "https://yogaanytime-media.global.ssl.fastly.net/1628272974_e6fb485e5a690d2b8b466c920ec4077e0c60961d/2021/05/alana-mitnick/14989_live/video/h264-,504p,720p,360p,216p.mpd" }
+			
+		],
+		"image": "//images.yogaanytime.com/2021/05/18/full_alana_210517_YA14989-23764.jpg",
+		
+		"title": "Groovy Grounding Flow",
+		"description": "Alana guides a grounding feel-good flow to inspire a sense of ease and peace.",
+		
+		"tracks": [
+			
+			{ "kind": "thumbnails", "file": "https://yogaanytime-media.global.ssl.fastly.net/1628272974_5e844d8d78c0a942366b1e9213f7524e4ef75277/2021/05/alana-mitnick/14989_live/thumbs/160x90.vtt" },
+			
+		{} ]
+	}],
+	"skin": {
+		"url": "https://www.yogaanytime.com/css/jwplayer8/skins/yoga_jwplayer8_skin.css?v=PIL-3405",
+		"name": "tm_skin"
+	},
+	"playbackRateControls": [0.5, 0.75, 1, 1.25, 1.5, 2.0],
+	
+	"cast": {
+		"appid": "148F051A",
+		"logo": "//images.yogaanytime.com/graphics/yoga/YAlogo_@2x.png",
+		"railcolor": "#3399cc"
+	},
+	
+	"width": "100%",
+	"aspectratio": "16:9",
+	"hlshtml": true,
+	"floating": { "dismissible": true } 
+};
+
+playermediaspace.setup(playerConfigmediaspace);
+
+
+
+if (typeof initJWPlayerMux !== 'undefined') {
+	initJWPlayerMux(playermediaspace, {
+		debug: false,
+		data: {
+			property_key: '5d24e5ea15eae8be7c6760978', // required
+			page_type: 'watchpage', // (see docs) 'watchpage', 'iframe', or leave empty
+			viewer_user_id: '291067', // ex: '12345'
+			experiment_name: '', // ex: 'player_test_A'
+			sub_property_id: 'yoga', // ex: 'cus-1'
+
+			// Player Metadata
+			player_name: 'jwplayer', // ex: 'My Main Player'
+			player_version: jwplayer.version.split("+")[0], // ex: '1.0.0'
+			player_init_time: playerInitTimemediaspace, // ex: 1451606400000
+
+			// Video Metadata (cleared with 'videochange' event)
+			video_id: '105300', // ex: 'abcd123'
+			video_title: '105300: Groovy Grounding Flow', // ex: 'My Great Video'
+			video_series: 'Alana Mitnick', // ex: 'Weekly Great Videos'
+			video_producer: '', // ex: 'Bob the Producer'
+			video_content_type: '', // 'short', 'movie', 'episode', 'clip', 'trailer', or 'event'
+			video_language_code: '', // ex: 'en'
+			video_variant_name: '', // ex: 'Spanish Hard Subs'
+			video_variant_id: '', // ex: 'abcd1234'
+			video_duration: '', // in milliseconds, ex: 120000
+			video_stream_type: 'on-demand', // 'live' or 'on-demand'
+			video_encoding_variant: '', // ex: 'Variant 1'
+			video_cdn: 'fastly' // ex: 'Fastly', 'Cloudfront'
+		}
+	});
+}
+
+var videoIsPlaying = 0;
+var asked_resume = 0;
+
+
+
+	var requireTermsOK = 1;
+
+	asked_resume = 0;
+	
+	
+
+	
+	
+	
+	
+	playermediaspace.on('time', function(evt) { 
+		var lastPosition = $("#video_view_pos").val();
+		var currentPosition = evt.position;
+		videoIsPlaying = 1;
+		
+		
+		
+		// record position in cookie, update form field	  
+		$("#video_view_pos").val(currentPosition);
+		//markWatched("mediaProgress");
+		var date = new Date();
+		date.setTime(date.getTime()+(90*1000));
+		document.cookie="last_video_id=105300; secure; expires=" + date.toGMTString();
+		document.cookie="last_position=" + currentPosition + "; secure; expires=" + date.toGMTString();
+	});
+	
+	
+	playermediaspace.on('pause', function() { 
+		if (videoIsPlaying == 1) { markWatched("mediaStop"); }
+		videoIsPlaying = 0;
+		if (document.ga) ga('send', 'event', 'video', 'pause', 'video_id', 105300);
+	});
+	
+	
+	playermediaspace.on('play', function() {
+		
+		var videoIsPlaying = 1;
+		position = $('#video_view_pos').val();
+		//console.log("onPlay position is: " + position);
+		if (position > 0) {
+			//if we have not asked them resume question yet...
+			if (asked_resume == 0) {
+				$('#js-progress-video').hide();
+				asked_resume = 1;
+				//console.log("resuming playback...");
+				doResumemediaspace(position);
+			}
+		}
+		markWatched("mediaPlay");
+		if (document.ga) ga('send', 'event', 'video', 'play', 'video_id', 105300);
+		
+		
+	});
+	
+	
+	playermediaspace.on('complete', function() { 
+		markWatched("mediaComplete");
+		
+		
+				showVideoCompleteModal();
+				
+		if (document.ga) ga('send', 'event', 'video', 'complete', 'video_id', 105300);
+	});
+
+	
+
+playermediaspace.on('error', function(error) {
+	var payload = {
+		vid: "105300",
+		cid: "3841",
+		i: "291067",
+		e: error,
+		c: jwplayer('mediaspace').getConfig()
+	};
+	
+	if (error.message.indexOf("Error loading media: File could not be played") >= 0) {
+		//Update their prefs to exclude 720p bad renditions, Show the help div
+		$('#playbackIssuesDIV').show();
+		
+		var file = jwplayer('mediaspace').getConfig().playlist[0].file;
+		
+		$.ajax({
+			async: false,
+			timeout: 10,
+			url: file,
+			type: "GET",
+			error: function(xhr, status, innererror) {
+				var responseText = xhr.responseText;
+				var re = /^Reference\&\#32\;\&\#35\;(.*)$/m;
+				var result = responseText.match(re);
+				if (result.length > 1) {
+					var reference = result[1];
+					payload = {
+						vid: "105300",
+						cid: "3841",
+						i: "291067",
+						e: error,
+						c: jwplayer('mediaspace').getConfig(),
+						ar: reference
+					};
+				}
+			}
+		});
+	}
+	else if (error.message.indexOf("Cannot load M3U8: Crossdomain access denied" >= 0)) {
+		if ($.cookie("crossdomainReload") !== "true") {
+			$.cookie("crossdomainReload", "true");
+			// Display brief flash message indicating we're reloading expired video page ?
+			location.reload();
+		}
+		else {
+			// Display more friendly error message than the JWPlayer M3U8 access denied?
+		}
+	}
+	else {
+		//alert(error.message.indexOf("Error loading media: File could not be played"));
+	}
+	
+	$.ajax({
+		type: "POST",
+		url: "/jwplayer/jwplayer_error.cfm",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(payload),
+		success: function(data) {
+			//result = $.parseJSON(data);
+			//console.log("post result:"+result.error_message);
+		}
+	});
+});
+
+
+function doPausemediaspace() {
+	if(playermediaspace.getState() == "playing") {
+		playermediaspace.pause();
+	}
+}
+
+function doPlayPausemediaspace() {
+	if(playermediaspace.getState() == "playing") {
+		playermediaspace.pause();
+	}
+	else {
+		playermediaspace.play();
+	}
+}
+
+function doResumemediaspace(resume_position) {
+	playermediaspace.seek(resume_position);
+	
+	$("#video_view_pos").val(resume_position);
+	
+}
+
+function getClassURL() {
+	new_url = "#";
+	
+	new_url = '/class_view.cfm?class_id=3841';
+	
+	return new_url;
+}
+
+
+function markWatched(my_action) {		
+	var my_position = document.getElementById("video_view_pos").value;
+	var instance = new classFunctions();  
+	if (my_action == 'mediaPlay' || my_action == 'mediaStop' || my_action == 'mediaComplete' || my_action == 'mediaProgress') {
+		var myResult = instance.saveClassView(105300, 291067, 'D65E068C-4FC1-4EC6-B7E3-C453AF32F83C', my_action, 3822365, my_position);
+	}
+	document.getElementById("video_view_pos").value = my_position;
+}
+
+function jumpToChapter(timecode) { seek(timecode); } // backward compatibility in case of caching; delete after 30 days, this function has been renamed
+function seek(timecode) { playermediaspace.seek(timecode); }
+
+function playVideo() { playermediaspace.play(); }
+

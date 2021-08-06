@@ -86,10 +86,10 @@ namespace YogaAnytimeDownloader
 
         private string PadName(string FileName)
         {
-            for (int i = 1; i < 10; i++)
+            for (int i = 1; i < 9999; i++)
             {
-                if (FileName.Contains($"-{i}.ts"))
-                    return FileName.Replace($"-{i}.ts", $"-0{i}.ts");
+                if (FileName.Contains($"p-{i}.ts"))
+                    return FileName.Replace($"p-{i}.ts", $"p-" + i.ToString().PadLeft(4, '0') + ".ts");
             }
             return FileName;
         }
@@ -237,6 +237,7 @@ namespace YogaAnytimeDownloader
                 Process.WaitForExit();
                 Process.Dispose();
             }
+            File.WriteAllText($"{Folder}\\mylist.txt", File.ReadAllText($"{Folder}\\mylist.txt").Replace("file all.ts", ""));
 
             DialogResult dialogResult = MessageBox.Show("Done! Would you like to remove the old unmerged TS files?", "Done", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
